@@ -1,0 +1,47 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [18, 20, 22]
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: unit + integration tests
+        run: npm test
+      - name: adversarial attack suite
+        run: npm run attacks
+      - name: regenerate and re-verify test vectors
+        run: npm run gen:vectors
+      - name: zero runtime dependencies policy
+        shell: bash
+        run: |
+          node -e "const p=require('./package.json'); const d=Object.keys(p.dependencies||{}); if(d.length>0){console.error('runtime dependencies are forbidden:',d.join(', '));process.exit(1)}; console.log('zero runtime dependencies confirmed')"
+
+  cross-verify:
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.10', '3.12']
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: generate vectors with Node
+        run: npm run gen:vectors
+      - name: independent Python verifier (RFC 8032 Ed25519, stdlib only)
+        run: python scripts/cross-verify.py

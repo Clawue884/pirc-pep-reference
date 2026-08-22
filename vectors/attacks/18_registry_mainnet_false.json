@@ -1,0 +1,22 @@
+{
+  "attack": "18_registry_mainnet_false",
+  "description": "signed event claims mainnet migration but launchpad registry says mainnet_migrated=false",
+  "expected_code": "INELIGIBLE_USER",
+  "precondition_verify_once": false,
+  "event": {
+    "v": 1,
+    "app_id": "demo-app",
+    "key_id": "k-2026-active",
+    "action_class": "A",
+    "action_id": "complete_transaction",
+    "weight": 50,
+    "timestamp": 1755860000000,
+    "nonce": "9da1594cb29a2d2418cb1df372478784",
+    "pioneer_uid_hash": "d100e5c2475f9d95dfe14d0e7d8d2439488679c8e5b6be0178e287df46ed060f",
+    "eligibility": {
+      "kyc_passed": true,
+      "mainnet_migrated": true
+    },
+    "signature": "Eg4WtI7r1n2Nsw9KyZ7OnWBZgmSqxaQvX0HNZFQUq3UWeTDNxM5xesHYmVQvICksgcynHvtHbcRxrkqIbyTsCg=="
+  }
+}

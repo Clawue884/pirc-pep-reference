@@ -1,0 +1,22 @@
+{
+  "attack": "04_payload_mutation_weight",
+  "description": "weight field edited after signing",
+  "expected_code": "INVALID_SIGNATURE",
+  "precondition_verify_once": false,
+  "event": {
+    "v": 1,
+    "app_id": "demo-app",
+    "key_id": "k-2026-active",
+    "action_class": "A",
+    "action_id": "complete_transaction",
+    "weight": 51,
+    "timestamp": 1755860000000,
+    "nonce": "c7f8f0eaf121409966170c1f23956ec8",
+    "pioneer_uid_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "eligibility": {
+      "kyc_passed": true,
+      "mainnet_migrated": true
+    },
+    "signature": "srwmL00KeGfTPhk2bhdE2PkBN+yRQenVdPMrlwPLsWWOohFztbC88Dgy1M39aW2VaMRCZKGH+lVm4XLGRyDBBg=="
+  }
+}

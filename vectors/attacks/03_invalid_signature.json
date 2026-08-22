@@ -1,0 +1,22 @@
+{
+  "attack": "03_invalid_signature",
+  "description": "signature bytes are corrupted after signing",
+  "expected_code": "INVALID_SIGNATURE",
+  "precondition_verify_once": false,
+  "event": {
+    "v": 1,
+    "app_id": "demo-app",
+    "key_id": "k-2026-active",
+    "action_class": "A",
+    "action_id": "complete_transaction",
+    "weight": 50,
+    "timestamp": 1755860000000,
+    "nonce": "1e68f35a930374b1a0acadbb899b7bb3",
+    "pioneer_uid_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "eligibility": {
+      "kyc_passed": true,
+      "mainnet_migrated": true
+    },
+    "signature": "AQEeLoVzYc4adTFrYrHRrdB6HhBhQ+PG889f6mk/7pNJ5zt6Z5SQRTLF2fuCNi1hLfcme3rUEfbRS7+dkvjYCA=="
+  }
+}

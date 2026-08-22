@@ -1,0 +1,87 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { execFileSync, spawnSync } from 'node:child_process';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const CLI = path.join(ROOT, 'src', 'cli.js');
+
+function tmpdir() {
+  return fs.mkdtempSync(path.join(os.tmpdir(), 'pep-cli-'));
+}
+
+function runCli(args, cwd) {
+  return spawnSync(process.execPath, [CLI, ...args], {
+    cwd,
+    encoding: 'utf8'
+  });
+}
+
+test('attacks command exits 0 and reports 19/19 rejected', () => {
+  const r = runCli(['attacks']);
+  assert.equal(r.status, 0, r.stderr);
+  assert.match(r.stdout, /19\/19 attacks rejected/);
+});
+
+test('demo command exits 0', () => {
+  const r = runCli(['demo']);
+  assert.equal(r.status, 0, r.stderr);
+  assert.match(r.stdout, /VERDICT: PASS/);
+});
+
+test('end-to-end: keygen, registry, sign, verify accept then replay reject', () => {
+  const dir = tmpdir();
+
+  execFileSync(process.execPath, [CLI, 'keygen', '--out', 'keys/dev.json'], { cwd: dir });
+  execFileSync(process.execPath, [CLI, 'init-reg', '--out', 'registry.json', '--app', 'acme-app'], { cwd: dir });
+  execFileSync(
+    process.execPath,
+    [CLI, 'add-key', '--registry', 'registry.json', '--app', 'acme-app', '--key-id', 'k1', '--pub', 'keys/dev.json'],
+    { cwd: dir }
+  );
+
+  const event = {
+    v: 1,
+    app_id: 'acme-app',
+    key_id: 'k1',
+    action_class: 'B',
+    action_id: 'finish_lesson',
+    weight: 7,
+    timestamp: Date.now(),
+    nonce: 'ab'.repeat(16),
+    pioneer_uid_hash: 'cd'.repeat(32),
+    eligibility: { kyc_passed: true, mainnet_migrated: true }
+  };
+  fs.writeFileSync(path.join(dir, 'event.json'), JSON.stringify(event, null, 2));
+
+  execFileSync(
+    process.execPath,
+    [CLI, 'eligible', '--registry', 'registry.json', '--uid-hash', 'cd'.repeat(32)],
+    { cwd: dir }
+  );
+
+  execFileSync(
+    process.execPath,
+    [CLI, 'sign', '--event', 'event.json', '--key', 'keys/dev.json', '--out', 'signed.json'],
+    { cwd: dir }
+  );
+
+  const okRun = runCli(
+    ['verify', '--event', 'signed.json', '--registry', 'registry.json', '--nonces', 'nonces.jsonl'],
+    dir
+  );
+  assert.equal(okRun.status, 0, okRun.stdout + okRun.stderr);
+  assert.match(okRun.stdout, /VERDICT: PASS/);
+
+  const replayRun = runCli(
+    ['verify', '--event', 'signed.json', '--registry', 'registry.json', '--nonces', 'nonces.jsonl'],
+    dir
+  );
+  assert.equal(replayRun.status, 1);
+  assert.match(replayRun.stdout, /VERDICT: REJECT \[REPLAY_DETECTED\]/);
+
+  fs.rmSync(dir, { recursive: true, force: true });
+});

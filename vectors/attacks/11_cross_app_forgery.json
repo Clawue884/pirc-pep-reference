@@ -1,0 +1,22 @@
+{
+  "attack": "11_cross_app_forgery",
+  "description": "valid key of another app signs this app’s event",
+  "expected_code": "INVALID_SIGNATURE",
+  "precondition_verify_once": false,
+  "event": {
+    "v": 1,
+    "app_id": "demo-app",
+    "key_id": "k-2026-active",
+    "action_class": "A",
+    "action_id": "complete_transaction",
+    "weight": 50,
+    "timestamp": 1755860000000,
+    "nonce": "71ea93335519e3b8af8b2f7566d60646",
+    "pioneer_uid_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "eligibility": {
+      "kyc_passed": true,
+      "mainnet_migrated": true
+    },
+    "signature": "IKFIwi+eh8Q+rU+9NNBZv/ukQkV64V6c7/7YcAmO87AN2/IfNdyn+6oViCyKkjjxEvOWCmspbg0atzCheimwDw=="
+  }
+}

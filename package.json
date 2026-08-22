@@ -1,0 +1,40 @@
+{
+  "name": "pirc-pep-reference",
+  "version": "0.1.0",
+  "description": "Minimal deterministic reference implementation of Programmable Engagement Proofs (PEP): canonical schemas, Ed25519-signed activity payloads, replay protection, bounded weights, and a verifiable CLI.",
+  "type": "module",
+  "author": {
+    "name": "EslaM-X",
+    "url": "https://github.com/EslaM-X"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EslaM-X/pirc-pep-reference.git"
+  },
+  "bugs": {
+    "url": "https://github.com/EslaM-X/pirc-pep-reference/issues"
+  },
+  "homepage": "https://github.com/EslaM-X/pirc-pep-reference#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "bin": {
+    "pep": "./src/cli.js"
+  },
+  "scripts": {
+    "test": "node --test",
+    "attacks": "node src/cli.js attacks",
+    "demo": "node src/cli.js demo",
+    "gen:vectors": "node scripts/gen-vectors.mjs && node scripts/check-vectors.mjs",
+    "ci": "npm test && npm run attacks && npm run gen:vectors"
+  },
+  "keywords": [
+    "pirc",
+    "pep",
+    "ed25519",
+    "canonical-json",
+    "replay-protection",
+    "sybil-resistance"
+  ],
+  "license": "(MIT OR Apache-2.0)"
+}

@@ -1,0 +1,22 @@
+{
+  "attack": "15_ineligible_user",
+  "description": "KYC flag false inside the signed eligibility block",
+  "expected_code": "INELIGIBLE_USER",
+  "precondition_verify_once": false,
+  "event": {
+    "v": 1,
+    "app_id": "demo-app",
+    "key_id": "k-2026-active",
+    "action_class": "A",
+    "action_id": "complete_transaction",
+    "weight": 50,
+    "timestamp": 1755860000000,
+    "nonce": "e481b350852a83a42ed59df0b76d6b60",
+    "pioneer_uid_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "eligibility": {
+      "kyc_passed": false,
+      "mainnet_migrated": true
+    },
+    "signature": "H9PjAPgv/NYzTNn4JL9T0cm0HBWVoq2jGfuoWA2FZo8Fw/5SEqU5NnXmxRODe/YehnSrTwZeqgi0Vu55+EyiDw=="
+  }
+}

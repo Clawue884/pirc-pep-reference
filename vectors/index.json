@@ -1,0 +1,103 @@
+{
+  "now": 1755860000000,
+  "valid": [
+    "valid/signed-event.json"
+  ],
+  "attacks": [
+    {
+      "attack": "01_replay_attack",
+      "file": "attacks/01_replay_attack.json",
+      "expected_code": "REPLAY_DETECTED"
+    },
+    {
+      "attack": "02_nonce_reuse",
+      "file": "attacks/02_nonce_reuse.json",
+      "expected_code": "REPLAY_DETECTED"
+    },
+    {
+      "attack": "03_invalid_signature",
+      "file": "attacks/03_invalid_signature.json",
+      "expected_code": "INVALID_SIGNATURE"
+    },
+    {
+      "attack": "04_payload_mutation_weight",
+      "file": "attacks/04_payload_mutation_weight.json",
+      "expected_code": "INVALID_SIGNATURE"
+    },
+    {
+      "attack": "05_payload_mutation_user",
+      "file": "attacks/05_payload_mutation_user.json",
+      "expected_code": "INVALID_SIGNATURE"
+    },
+    {
+      "attack": "06_timestamp_expired",
+      "file": "attacks/06_timestamp_expired.json",
+      "expected_code": "TIMESTAMP_EXPIRED"
+    },
+    {
+      "attack": "07_timestamp_future",
+      "file": "attacks/07_timestamp_future.json",
+      "expected_code": "TIMESTAMP_IN_FUTURE"
+    },
+    {
+      "attack": "08_weight_inflation",
+      "file": "attacks/08_weight_inflation.json",
+      "expected_code": "WEIGHT_OVERFLOW"
+    },
+    {
+      "attack": "09_unknown_app",
+      "file": "attacks/09_unknown_app.json",
+      "expected_code": "UNKNOWN_APP"
+    },
+    {
+      "attack": "10_revoked_key",
+      "file": "attacks/10_revoked_key.json",
+      "expected_code": "REVOKED_KEY"
+    },
+    {
+      "attack": "11_cross_app_forgery",
+      "file": "attacks/11_cross_app_forgery.json",
+      "expected_code": "INVALID_SIGNATURE"
+    },
+    {
+      "attack": "12_missing_field",
+      "file": "attacks/12_missing_field.json",
+      "expected_code": "SCHEMA"
+    },
+    {
+      "attack": "13_unknown_field_injection",
+      "file": "attacks/13_unknown_field_injection.json",
+      "expected_code": "SCHEMA"
+    },
+    {
+      "attack": "14_unsupported_version",
+      "file": "attacks/14_unsupported_version.json",
+      "expected_code": "SCHEMA"
+    },
+    {
+      "attack": "15_ineligible_user",
+      "file": "attacks/15_ineligible_user.json",
+      "expected_code": "INELIGIBLE_USER"
+    },
+    {
+      "attack": "16_unknown_key_claim",
+      "file": "attacks/16_unknown_key_claim.json",
+      "expected_code": "UNKNOWN_KEY"
+    },
+    {
+      "attack": "17_registry_kyc_false",
+      "file": "attacks/17_registry_kyc_false.json",
+      "expected_code": "INELIGIBLE_USER"
+    },
+    {
+      "attack": "18_registry_mainnet_false",
+      "file": "attacks/18_registry_mainnet_false.json",
+      "expected_code": "INELIGIBLE_USER"
+    },
+    {
+      "attack": "19_unregistered_pioneer",
+      "file": "attacks/19_unregistered_pioneer.json",
+      "expected_code": "INELIGIBLE_USER"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "attack": "14_unsupported_version",
+  "description": "future spec version submitted against v1 verifier",
+  "expected_code": "SCHEMA",
+  "precondition_verify_once": false,
+  "event": {
+    "v": 99,
+    "app_id": "demo-app",
+    "key_id": "k-2026-active",
+    "action_class": "A",
+    "action_id": "complete_transaction",
+    "weight": 50,
+    "timestamp": 1755860000000,
+    "nonce": "5b4a19103195731a944d084d1d67ea25",
+    "pioneer_uid_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "eligibility": {
+      "kyc_passed": true,
+      "mainnet_migrated": true
+    },
+    "signature": "UhWC/kcJcZ/tcoR8mJmw8n+BiQEfhGaG1WaYxnwahURtNRmFS6j0oKRi55fWqaXdImOFnpx8lIMNar3iA+FjAw=="
+  }
+}

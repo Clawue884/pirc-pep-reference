@@ -1,0 +1,22 @@
+{
+  "attack": "07_timestamp_future",
+  "description": "event timestamp beyond the allowed future skew",
+  "expected_code": "TIMESTAMP_IN_FUTURE",
+  "precondition_verify_once": false,
+  "event": {
+    "v": 1,
+    "app_id": "demo-app",
+    "key_id": "k-2026-active",
+    "action_class": "A",
+    "action_id": "complete_transaction",
+    "weight": 50,
+    "timestamp": 1755860600000,
+    "nonce": "ff9cb3340b19db8d6292f930f237c878",
+    "pioneer_uid_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "eligibility": {
+      "kyc_passed": true,
+      "mainnet_migrated": true
+    },
+    "signature": "nA2RdlE1vo/FWUMhQgR6gJIi4vUokG/KmEK92xz6g9yassUkfTLUBKqtmpjqmATbk9iNi+m+67aqL1kSO4ZhDA=="
+  }
+}

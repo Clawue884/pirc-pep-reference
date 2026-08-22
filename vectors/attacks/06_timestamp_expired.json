@@ -1,0 +1,22 @@
+{
+  "attack": "06_timestamp_expired",
+  "description": "event timestamp outside the acceptance window (too old)",
+  "expected_code": "TIMESTAMP_EXPIRED",
+  "precondition_verify_once": false,
+  "event": {
+    "v": 1,
+    "app_id": "demo-app",
+    "key_id": "k-2026-active",
+    "action_class": "A",
+    "action_id": "complete_transaction",
+    "weight": 50,
+    "timestamp": 1755859699000,
+    "nonce": "f2440294c94d5e9fc768358afb39771c",
+    "pioneer_uid_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "eligibility": {
+      "kyc_passed": true,
+      "mainnet_migrated": true
+    },
+    "signature": "S2gSHIgqydfhFRrt8+/6It1yKxYLKNstXlWDqeyZxPHSorLfy5otL4NtcgU0AsZpybPYoOgbXR07yojQh5qJBg=="
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "app_id": "demo-app",
+  "key_id": "k-2026-active",
+  "action_class": "A",
+  "action_id": "complete_transaction",
+  "weight": 50,
+  "timestamp": 1755860000000,
+  "nonce": "11111111111111111111111111111111",
+  "pioneer_uid_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "eligibility": {
+    "kyc_passed": true,
+    "mainnet_migrated": true
+  },
+  "signature": "Q2M5SYrKmnD+vX+DQQacS+7o4Gi1BVAzF6PnotAkW510PUWAOb3UjmR8m3gNFkshD+x8krX9Ti2oU0omwMsWCA=="
+}

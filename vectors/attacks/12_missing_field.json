@@ -1,0 +1,21 @@
+{
+  "attack": "12_missing_field",
+  "description": "required field removed from the envelope",
+  "expected_code": "SCHEMA",
+  "precondition_verify_once": false,
+  "event": {
+    "v": 1,
+    "app_id": "demo-app",
+    "key_id": "k-2026-active",
+    "action_class": "A",
+    "weight": 50,
+    "timestamp": 1755860000000,
+    "nonce": "7cf4cb5864adbfe3ebb121beb0e01a5d",
+    "pioneer_uid_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "eligibility": {
+      "kyc_passed": true,
+      "mainnet_migrated": true
+    },
+    "signature": "al5jeHfojIyUbuqS2vJX/cyRC7fwwfkUYqSFEsbDTFF6gdbQ4sXjzUjGQKca/Mv3qAskuDEHKYcnZJWk+qioDw=="
+  }
+}
