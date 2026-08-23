@@ -33,6 +33,101 @@ test('suite covers the documented adversarial matrix', () => {
     '17_registry_kyc_false',
     '18_registry_mainnet_false',
     '19_unregistered_pioneer'
+      {
+    name: '20_empty_nonce',
+    description: 'nonce is present but malformed and empty',
+    expected_code: 'SCHEMA',
+    build(world) {
+      const signed = validSignedEvent(
+        world,
+        { pioneer_uid_hash: ALICE_HASH }
+      );
+
+      signed.nonce = '';
+
+      return { event: signed };
+    }
+  },
+
+  {
+    name: '21_uppercase_nonce',
+    description: 'nonce uses uppercase hexadecimal characters',
+    expected_code: 'SCHEMA',
+    build(world) {
+      const signed = validSignedEvent(
+        world,
+        { pioneer_uid_hash: ALICE_HASH }
+      );
+
+      signed.nonce = signed.nonce.toUpperCase();
+
+      return { event: signed };
+    }
+  },
+
+  {
+    name: '22_fractional_weight',
+    description: 'weight is changed from integer to floating point',
+    expected_code: 'SCHEMA',
+    build(world) {
+      const signed = validSignedEvent(
+        world,
+        { pioneer_uid_hash: ALICE_HASH }
+      );
+
+      signed.weight = 50.5;
+
+      return { event: signed };
+    }
+  },
+
+  {
+    name: '23_negative_weight',
+    description: 'weight is negative',
+    expected_code: 'SCHEMA',
+    build(world) {
+      const signed = validSignedEvent(
+        world,
+        { pioneer_uid_hash: ALICE_HASH }
+      );
+
+      signed.weight = -1;
+
+      return { event: signed };
+    }
+  },
+
+  {
+    name: '24_extra_eligibility_field',
+    description: 'eligibility object receives an unauthorized field',
+    expected_code: 'SCHEMA',
+    build(world) {
+      const signed = validSignedEvent(
+        world,
+        { pioneer_uid_hash: ALICE_HASH }
+      );
+
+      signed.eligibility.admin = true;
+
+      return { event: signed };
+    }
+  },
+
+  {
+    name: '25_timestamp_string',
+    description: 'timestamp is represented as a string instead of an integer',
+    expected_code: 'SCHEMA',
+    build(world) {
+      const signed = validSignedEvent(
+        world,
+        { pioneer_uid_hash: ALICE_HASH }
+      );
+
+      signed.timestamp = String(NOW);
+
+      return { event: signed };
+    }
+  },
   ]) {
     assert.ok(names.includes(expected), `missing attack scenario: ${expected}`);
   }
