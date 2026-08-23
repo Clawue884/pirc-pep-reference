@@ -7,10 +7,10 @@
   "weight": 50,
   "timestamp": 1755860000000,
   "nonce": "11111111111111111111111111111111",
-  "pioneer_uid_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "pioneer_uid_hash": "h1:VqKoVk0vLaGq8pfNkZQWAR2X0CfmzW6I3VdwaJ7394k",
   "eligibility": {
     "kyc_passed": true,
     "mainnet_migrated": true
   },
-  "signature": "Q2M5SYrKmnD+vX+DQQacS+7o4Gi1BVAzF6PnotAkW510PUWAOb3UjmR8m3gNFkshD+x8krX9Ti2oU0omwMsWCA=="
+  "signature": "xTPB7XArROxw1Rmfdb7osBR6Rb2axeIfZQ0bOfy3SocPrNfdUWgBLq7Db5jB9mwafLIQ4snXt8+bBtO9VeT9BQ=="
 }

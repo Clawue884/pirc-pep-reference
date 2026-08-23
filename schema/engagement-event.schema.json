@@ -53,12 +53,12 @@
     "nonce": {
       "type": "string",
       "pattern": "^[0-9a-f]{32}$",
-      "description": "16 random bytes (hex). Globally namespaced per app_id; recorded only when the full pipeline passes."
+      "description": "16 random bytes (hex). Unique per app_id; claimed atomically (test-and-set) only when the full pipeline passes."
     },
     "pioneer_uid_hash": {
       "type": "string",
-      "pattern": "^[0-9a-f]{64}$",
-      "description": "sha256 of the Pi UID (optionally salted). The raw UID never leaves the backend."
+      "pattern": "^h1:[A-Za-z0-9_-]{43}$",
+      "description": "Versioned keyed hash of the Pi UID: 'h1:' + base64url(HMAC-SHA256(backend_secret, NFC(UID))), secret >= 16 chars and never transmitted. The raw UID never leaves the backend. Legacy bare sha256 hex tags ([0-9a-f]{64}) are readable by registries but deprecated."
     },
     "eligibility": {
       "type": "object",

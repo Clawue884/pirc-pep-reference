@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { formatAttackReport, runAttackSuite, makeWorld } from './attacks.js';
-import { newEvent, signEvent } from './events.js';
+import { hashUid, newEvent, signEvent } from './events.js';
 import { generateKeyPair } from './keys.js';
 import { InMemoryNonceStore, FileNonceStore } from './nonces.js';
 import { createRegistry, registerApp, registerKey, revokeKey, markEligible } from './registry.js';
@@ -71,7 +71,7 @@ Commands:
   init-reg     --out registry.json --app demo-app
   add-key      --registry registry.json --app demo-app --key-id k-2026 --pub keys/demo.json
   revoke-key   --registry registry.json --app demo-app --key-id k-2026
-  eligible     --registry registry.json --uid-hash <sha256hex>
+  eligible     --registry registry.json --uid-hash <h1:hmac-tag>
   sign         --event event.json --key keys/demo.json [--out signed.json]
   verify       --event signed.json --registry registry.json [--nonces nonces.jsonl] [--now <unix-ms>]
   attacks      run the full adversarial suite
@@ -80,8 +80,9 @@ Commands:
 
 function cmdKeygen(flags) {
   const out = flags.out ?? 'keys/keypair.json';
-  writeJson(out, generateKeyPair());
-  console.log(`keypair written to ${out}`);
+  const opts = flags.seed ? { seed: String(flags.seed) } : {};
+  writeJson(out, generateKeyPair(opts));
+  console.log(`keypair written to ${out}${flags.seed ? ' (from provided seed)' : ''}`);
 }
 
 function cmdInitReg(flags) {
@@ -145,7 +146,6 @@ function cmdDemo() {
   console.log(`${BOLD}PiRC1-PEP Reference Demo${RESET}\n`);
 
   console.log(`${DIM}[1] backend signs a high-value engagement event (class A, weight 50)${RESET}`);
-  const aliceHash = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
   const event = newEvent({
     app_id: 'demo-app',
     key_id: 'k-2026-active',
@@ -153,9 +153,9 @@ function cmdDemo() {
     action_id: 'complete_transaction',
     weight: 50,
     pioneer_uid: 'alice',
+    uidSecret: world.uidSecret,
     now: Date.now()
   });
-  event.pioneer_uid_hash = aliceHash;
   const signed = signEvent(event, world.currentKey.private_key_pem);
 
   const store = new InMemoryNonceStore();

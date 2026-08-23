@@ -1,32 +1,39 @@
 import { TIMESTAMP_WINDOW_MS } from './constants.js';
-import { newEvent, signEvent } from './events.js';
+import { hashUid, newEvent, signEvent } from './events.js';
 import { generateKeyPair } from './keys.js';
 import { InMemoryNonceStore } from './nonces.js';
 import { createRegistry, registerApp, registerKey, revokeKey, markEligible } from './registry.js';
 import { verifySignedEvent } from './verify.js';
 
 const NOW = 1755860000000;
-const ALICE_HASH = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
+
+// Fixed material so every artifact derived from this suite — keys, signatures,
+// committed vectors — is byte-for-byte reproducible on every machine.
+const CURRENT_KEY_SEED = '11'.repeat(32);
+const RETIRED_KEY_SEED = '22'.repeat(32);
+const EVIL_KEY_SEED = '33'.repeat(32);
+export const SUITE_UID_SECRET = 'pep-reference-uid-secret-v1';
 
 export const SUITE_NOW = NOW;
+const ALICE_HASH = hashUid('alice', SUITE_UID_SECRET);
 
 export function makeWorld() {
   const registry = createRegistry();
   registerApp(registry, 'demo-app');
   registerApp(registry, 'evil-app');
 
-  const currentKey = generateKeyPair();
-  const retiredKey = generateKeyPair();
-  const evilKey = generateKeyPair();
+  const currentKey = generateKeyPair({ seed: CURRENT_KEY_SEED });
+  const retiredKey = generateKeyPair({ seed: RETIRED_KEY_SEED });
+  const evilKey = generateKeyPair({ seed: EVIL_KEY_SEED });
 
-  registerKey(registry, 'demo-app', 'k-2026-active', currentKey.public_key_pem);
-  registerKey(registry, 'demo-app', 'k-2025-retired', retiredKey.public_key_pem);
+  registerKey(registry, 'demo-app', 'k-2026-active', currentKey.public_key_pem, SUITE_NOW);
+  registerKey(registry, 'demo-app', 'k-2025-retired', retiredKey.public_key_pem, SUITE_NOW);
   revokeKey(registry, 'demo-app', 'k-2025-retired');
-  registerKey(registry, 'evil-app', 'k-evil', evilKey.public_key_pem);
+  registerKey(registry, 'evil-app', 'k-evil', evilKey.public_key_pem, SUITE_NOW);
 
   markEligible(registry, ALICE_HASH);
 
-  return { registry, currentKey, retiredKey, evilKey };
+  return { registry, currentKey, retiredKey, evilKey, uidSecret: SUITE_UID_SECRET };
 }
 
 function validSignedEvent(world, overrides = {}, eventOpts = {}) {
@@ -37,7 +44,9 @@ function validSignedEvent(world, overrides = {}, eventOpts = {}) {
     action_id: 'complete_transaction',
     weight: 50,
     pioneer_uid: 'unused-because-hash-overridden',
+    uidSecret: world.uidSecret,
     now: NOW,
+    nonce: 'ab'.repeat(16),
     ...eventOpts
   });
   Object.assign(event, overrides);
@@ -103,7 +112,7 @@ export const ATTACKS = [
     expected_code: 'INVALID_SIGNATURE',
     build(world) {
       const signed = validSignedEvent(world, { pioneer_uid_hash: ALICE_HASH });
-      signed.pioneer_uid_hash = 'a'.repeat(64);
+      signed.pioneer_uid_hash = hashUid('mallory', world.uidSecret);
       return { event: signed };
     }
   },
@@ -155,7 +164,9 @@ export const ATTACKS = [
         action_id: 'complete_transaction',
         weight: 50,
         pioneer_uid: 'unused-because-hash-overridden',
-        now: NOW
+        uidSecret: world.uidSecret,
+        now: NOW,
+        nonce: 'ab'.repeat(16)
       });
       event.pioneer_uid_hash = ALICE_HASH;
       return { event: signEvent(event, world.retiredKey.private_key_pem) };
@@ -173,7 +184,9 @@ export const ATTACKS = [
         action_id: 'complete_transaction',
         weight: 50,
         pioneer_uid: 'unused-because-hash-overridden',
-        now: NOW
+        uidSecret: world.uidSecret,
+        now: NOW,
+        nonce: 'ab'.repeat(16)
       });
       event.pioneer_uid_hash = ALICE_HASH;
       return { event: signEvent(event, world.evilKey.private_key_pem) };
@@ -230,7 +243,9 @@ export const ATTACKS = [
         action_id: 'complete_transaction',
         weight: 50,
         pioneer_uid: 'unused-because-hash-overridden',
-        now: NOW
+        uidSecret: world.uidSecret,
+        now: NOW,
+        nonce: 'ab'.repeat(16)
       });
       event.pioneer_uid_hash = ALICE_HASH;
       return { event: signEvent(event, world.currentKey.private_key_pem) };
@@ -256,10 +271,30 @@ export const ATTACKS = [
   },
   {
     name: '19_unregistered_pioneer',
-    description: 'pioneer hash absent from the launchpad eligibility registry entirely',
+    description: 'schema-valid pioneer hash absent from the launchpad eligibility registry entirely',
     expected_code: 'INELIGIBLE_USER',
     build(world) {
-      return { event: validSignedEvent(world, { pioneer_uid_hash: 'f'.repeat(64) }) };
+      return { event: validSignedEvent(world, { pioneer_uid_hash: hashUid('stranger', world.uidSecret) }) };
+    }
+  },
+  {
+    name: '20_prototype_key_app',
+    description: 'app_id set to an inherited object-prototype property name ("constructor") to probe unsafe registry lookups',
+    expected_code: 'UNKNOWN_APP',
+    build(world) {
+      const event = newEvent({
+        app_id: 'constructor',
+        key_id: 'k-2026-active',
+        action_class: 'A',
+        action_id: 'complete_transaction',
+        weight: 50,
+        pioneer_uid: 'unused-because-hash-overridden',
+        uidSecret: world.uidSecret,
+        now: NOW,
+        nonce: 'ab'.repeat(16)
+      });
+      event.pioneer_uid_hash = ALICE_HASH;
+      return { event: signEvent(event, world.currentKey.private_key_pem) };
     }
   }
 ];

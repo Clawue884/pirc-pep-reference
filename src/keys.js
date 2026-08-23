@@ -1,7 +1,23 @@
 import crypto from 'node:crypto';
 
-export function generateKeyPair() {
-  const { publicKey, privateKey } = crypto.generateKeyPairSync('ed25519');
+const PKCS8_ED25519_PREFIX = Buffer.from('302e020100300506032b657004220420', 'hex');
+
+export function generateKeyPair({ seed } = {}) {
+  let privateKey;
+  if (seed === undefined) {
+    privateKey = crypto.generateKeyPairSync('ed25519').privateKey;
+  } else {
+    const s = typeof seed === 'string' ? Buffer.from(seed, 'hex') : Buffer.from(seed);
+    if (s.length !== 32) {
+      throw new TypeError('Ed25519 seed must be exactly 32 bytes');
+    }
+    privateKey = crypto.createPrivateKey({
+      key: Buffer.concat([PKCS8_ED25519_PREFIX, s]),
+      format: 'der',
+      type: 'pkcs8'
+    });
+  }
+  const publicKey = crypto.createPublicKey(privateKey);
   return {
     public_key_pem: publicKey.export({ type: 'spki', format: 'pem' }),
     private_key_pem: privateKey.export({ type: 'pkcs8', format: 'pem' })

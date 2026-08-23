@@ -1,13 +1,13 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { makeWorld } from '../src/attacks.js';
-import { newEvent, signEvent } from '../src/events.js';
+import { makeWorld, SUITE_UID_SECRET } from '../src/attacks.js';
+import { hashUid, newEvent, signEvent } from '../src/events.js';
 import { InMemoryNonceStore } from '../src/nonces.js';
 import { markEligible } from '../src/registry.js';
 import { verifySignedEvent } from '../src/verify.js';
 
 const NOW = 1755860000000;
-const ALICE_HASH = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
+const ALICE_HASH = hashUid('alice', SUITE_UID_SECRET);
 
 function acceptedEvent(world) {
   const event = newEvent({
@@ -17,6 +17,7 @@ function acceptedEvent(world) {
     action_id: 'complete_transaction',
     weight: 50,
     pioneer_uid: 'x',
+    uidSecret: SUITE_UID_SECRET,
     now: NOW
   });
   event.pioneer_uid_hash = ALICE_HASH;

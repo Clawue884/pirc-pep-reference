@@ -4,29 +4,29 @@
     "demo-app": {
       "keys": {
         "k-2026-active": {
-          "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAulgh4Abu1DtkdRrMgqeiFcMu+Vt7p24gfR+TXOC2lnQ=\n-----END PUBLIC KEY-----\n",
+          "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA0EqyMnQrtKs6E2i9RhXk5tAiSrcaAWuvhSCjMsl3hzc=\n-----END PUBLIC KEY-----\n",
           "status": "active",
-          "registered_at": 1787406854484
+          "registered_at": 1755860000000
         },
         "k-2025-retired": {
-          "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA8sslChFFKuCRPOv89FuuFjl2vBkiU1s1YfCBUeqykAs=\n-----END PUBLIC KEY-----\n",
+          "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAoJql9HpnWYAv+VX43C0qFKXJnSO+l/hkEn/5ODRVpPA=\n-----END PUBLIC KEY-----\n",
           "status": "revoked",
-          "registered_at": 1787406854484
+          "registered_at": 1755860000000
         }
       }
     },
     "evil-app": {
       "keys": {
         "k-evil": {
-          "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAhMxMI0nmGRXzS3qxnsAhsQHkZIuXLQkl55l+eFo6/ys=\n-----END PUBLIC KEY-----\n",
+          "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAF8t5+ytBIPKx7GXkGY1uCLKOgT/rAeSkAIObheGAgM4=\n-----END PUBLIC KEY-----\n",
           "status": "active",
-          "registered_at": 1787406854484
+          "registered_at": 1755860000000
         }
       }
     }
   },
   "eligible_users": {
-    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855": {
+    "h1:VqKoVk0vLaGq8pfNkZQWAR2X0CfmzW6I3VdwaJ7394k": {
       "kyc_passed": true,
       "mainnet_migrated": true
     }

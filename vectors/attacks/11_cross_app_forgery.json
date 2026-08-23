@@ -11,12 +11,12 @@
     "action_id": "complete_transaction",
     "weight": 50,
     "timestamp": 1755860000000,
-    "nonce": "71ea93335519e3b8af8b2f7566d60646",
-    "pioneer_uid_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "nonce": "abababababababababababababababab",
+    "pioneer_uid_hash": "h1:VqKoVk0vLaGq8pfNkZQWAR2X0CfmzW6I3VdwaJ7394k",
     "eligibility": {
       "kyc_passed": true,
       "mainnet_migrated": true
     },
-    "signature": "IKFIwi+eh8Q+rU+9NNBZv/ukQkV64V6c7/7YcAmO87AN2/IfNdyn+6oViCyKkjjxEvOWCmspbg0atzCheimwDw=="
+    "signature": "iTnTs5doBJ6l3+IEcyo0N7OlUHQBEOdyjKrPY1pQMSjF2DWIJkCiMLDMUdkJErujKUW0axWULquYbsn3zxPiCw=="
   }
 }

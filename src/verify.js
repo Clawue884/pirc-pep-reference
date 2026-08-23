@@ -1,7 +1,7 @@
 import { canonicalize, CanonicalError } from './canonical.js';
 import { DOMAIN, ERROR_CODES, TIMESTAMP_WINDOW_MS, WEIGHT_CEILINGS } from './constants.js';
 import { verifySignature } from './keys.js';
-import { resolveKey, getEligibilityRecord } from './registry.js';
+import { resolveKey, getEligibilityRecord, hasApp } from './registry.js';
 import { schemaError } from './schema.js';
 
 export function signingBytesFromEvent(event) {
@@ -18,8 +18,8 @@ export function verifySignedEvent(event, { registry, nonceStore, now = Date.now(
     return { ok: false, code, checks };
   };
 
-  if (!nonceStore || typeof nonceStore.has !== 'function' || typeof nonceStore.add !== 'function') {
-    throw new TypeError('nonceStore is required (use InMemoryNonceStore or FileNonceStore)');
+  if (!nonceStore || typeof nonceStore.claimIfAbsent !== 'function') {
+    throw new TypeError('nonceStore with atomic claimIfAbsent() is required (use InMemoryNonceStore or FileNonceStore)');
   }
 
   if (event === null || typeof event !== 'object' || Array.isArray(event)) {
@@ -31,7 +31,7 @@ export function verifySignedEvent(event, { registry, nonceStore, now = Date.now(
   }
   record('SCHEMA', true);
 
-  if (!registry || typeof registry.apps !== 'object' || registry.apps === null || !registry.apps[event.app_id]) {
+  if (!hasApp(registry, event.app_id)) {
     return reject('APP_KNOWN', ERROR_CODES.UNKNOWN_APP);
   }
   record('APP_KNOWN', true);
@@ -99,10 +99,9 @@ export function verifySignedEvent(event, { registry, nonceStore, now = Date.now(
   record('ELIGIBILITY', true);
 
   const nonceKey = `${event.app_id}:${event.nonce}`;
-  if (nonceStore.has(nonceKey)) {
+  if (!nonceStore.claimIfAbsent(nonceKey)) {
     return reject('NONCE_REPLAY', ERROR_CODES.REPLAY_DETECTED);
   }
-  nonceStore.add(nonceKey);
   record('NONCE_REPLAY', true);
 
   return { ok: true, code: null, checks };

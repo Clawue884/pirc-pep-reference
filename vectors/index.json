@@ -98,6 +98,11 @@
       "attack": "19_unregistered_pioneer",
       "file": "attacks/19_unregistered_pioneer.json",
       "expected_code": "INELIGIBLE_USER"
+    },
+    {
+      "attack": "20_prototype_key_app",
+      "file": "attacks/20_prototype_key_app.json",
+      "expected_code": "UNKNOWN_APP"
     }
   ]
 }
