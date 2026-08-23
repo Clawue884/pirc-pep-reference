@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions & implementation help
+    url: https://github.com/EslaM-X/pirc-pep-reference/discussions/categories/q-a
+    about: Ask how to integrate PEP/1 or interpret a verdict — keep issues for defects and roadmap work.
+  - name: Protocol ideas & proposals
+    url: https://github.com/EslaM-X/pirc-pep-reference/discussions/categories/ideas
+    about: Discuss direction changes before opening a feature request.
