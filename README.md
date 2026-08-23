@@ -11,8 +11,8 @@
 [![Node](https://img.shields.io/badge/node-%E2%89%A518-brightgreen.svg)](https://nodejs.org)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org)
 [![Dependencies](https://img.shields.io/badge/dependencies-0-success.svg)](#-zero-dependencies)
-[![Tests](https://img.shields.io/badge/tests-20%2F20-brightgreen.svg)](#-run-it-yourself)
-[![Attacks](https://img.shields.io/badge/adversarial%20suite-19%2F19%20rejected-red.svg)](https://github.com/EslaM-X/pirc-pep-reference#-adversarial-suite)
+[![Tests](https://img.shields.io/badge/tests-38%2F38-brightgreen.svg)](#-run-it-yourself)
+[![Attacks](https://img.shields.io/badge/adversarial%20suite-20%2F20%20rejected-red.svg)](https://github.com/EslaM-X/pirc-pep-reference#-adversarial-suite)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-ff69b4.svg)](#-contributing)
 [![Made in Egypt](https://img.shields.io/badge/made%20in-Egypt-%F0%9F%87%AA%F0%9F%87%AC-orange.svg)](https://github.com/EslaM-X)
 
@@ -67,7 +67,7 @@ It implements exactly what was discussed there, nothing more:
 | bounded weights (no utility inflation) | class ceilings enforced even over valid signatures |
 | replay protection | per-app nonce store, recorded only on full pass |
 | deterministic validation | fixed 9-step pipeline, byte-stable canonical form |
-| reproducible evidence | `vectors/` regenerated + re-checked in CI |
+| reproducible evidence | `vectors/` are byte-for-byte reproducible — regenerated and diff-gated in CI |
 
 ## ✨ Features
 
@@ -75,11 +75,13 @@ It implements exactly what was discussed there, nothing more:
 |:---:|---|---|
 | 🔒 | **Ed25519 signatures** | RFC 8032 via Node stdlib `node:crypto` |
 | 🧊 | **Frozen canonical JSON** | JCS-subset profile, integers only, byte-stable |
-| 🔁 | **Replay protection** | per-app nonce store; burned only on full pass |
+| 🔁 | **Replay protection** | per-app nonce store with **atomic test-and-set** (`claimIfAbsent`); burned only on full pass; durable fsynced file store with cross-process locking |
 | ⚖️ | **Bounded weights** | class ceilings enforced *even over valid signatures* |
 | 🪪 | **Registry-gated eligibility** | KYC/Mainnet flags checked server-side, never trusted from the payload |
+| 🕵️ | **Privacy-preserving identities** | `pioneer_uid_hash` is a keyed HMAC-SHA256 tag (versioned `h1:`), NFC-normalized — rainbow-table-proof |
+| 🎲 | **Deterministic key material** | optional seed → RFC 8032-fixed Ed25519 keys; committed vectors are **byte-for-byte reproducible** (CI-diffed) |
 | 🔑 | **Key rotation & revocation** | `key_id` indirection, instant revocation path |
-| 🧪 | **Adversarial suite** | 19 attacks, each rejected with its exact error code |
+| 🧪 | **Adversarial suite** | 20 attacks, each rejected with its exact error code |
 | 🌍 | **Cross-language verification** | every vector re-verified by an independent pure-Python Ed25519 verifier |
 | 📦 | **Zero dependencies** | runtime uses Node.js stdlib only — no supply-chain surface |
 
@@ -91,8 +93,8 @@ It implements exactly what was discussed there, nothing more:
 git clone https://github.com/EslaM-X/pirc-pep-reference.git
 cd pirc-pep-reference
 
-npm test          # unit + integration tests        → 20/20 ✔
-npm run attacks   # adversarial suite               → 19/19 rejected ✔
+npm test          # unit + integration tests        → 38/38 ✔
+npm run attacks   # adversarial suite               → 20/20 rejected ✔
 npm run demo      # end-to-end walkthrough          → deterministic verdicts
 ```
 
@@ -102,7 +104,7 @@ For the independent Python verifier (standard library only):
 
 ```bash
 npm run gen:vectors && python scripts/cross-verify.py
-# CROSS-VERIFICATION OK (pure Python): 1 valid accepted, 19/19 attacks rejected
+# CROSS-VERIFICATION OK (pure Python): 1 valid accepted, 20/20 attacks rejected
 ```
 
 ## 🎬 Demo
@@ -148,9 +150,10 @@ Every attack is a committed test vector with an expected rejection code:
 | 16 | unknown key claim | `UNKNOWN_KEY` |
 | 17–18 | registry says kyc/mainnet = false despite signed claims | `INELIGIBLE_USER` |
 | 19 | unregistered pioneer | `INELIGIBLE_USER` |
+| 20 | app id set to an object-prototype property name | `UNKNOWN_APP` |
 
 ```
-RESULT: 19/19 attacks rejected
+RESULT: 20/20 attacks rejected
 ```
 
 ## 🌍 Cross-language verification
@@ -205,14 +208,14 @@ pirc-pep-reference/
 │   ├── events.js        event construction + Ed25519 signing
 │   ├── keys.js          key generation (RFC 8032 via node:crypto)
 │   ├── registry.js      app/key registry + eligibility registry
-│   ├── nonces.js        InMemory + file-backed nonce stores
+│   ├── nonces.js        InMemory + file-backed nonce stores (atomic claimIfAbsent)
 │   ├── verify.js        ★ the deterministic 9-step pipeline
 │   ├── attacks.js       the adversarial suite
 │   └── cli.js           keygen / init-reg / add-key / sign / verify / demo
 ├── schema/
 │   └── engagement-event.schema.json   JSON Schema description
 ├── scripts/
-│   ├── gen-vectors.mjs  regenerate all vectors deterministically
+│   ├── gen-vectors.mjs  regenerate all vectors byte-for-byte deterministically
 │   ├── check-vectors.mjs re-check committed vectors
 │   └── cross-verify.py  🐍 independent pure-Python RFC 8032 verifier
 ├── test/
@@ -220,11 +223,12 @@ pirc-pep-reference/
 │   ├── verify.test.js         pipeline incl. registry gating
 │   ├── trust-boundary.test.js what a lying issuer can & cannot do
 │   ├── attacks.test.js        the full adversarial matrix
+│   ├── hardening.test.js      atomicity, durability, reproducibility, pollution
 │   └── cli.test.js            CLI end-to-end
 ├── vectors/
 │   ├── valid/signed-event.json        the one true positive vector
 │   ├── registry.json                  vector world state
-│   └── attacks/*.json                 19 attack vectors + expected codes
+│   └── attacks/*.json                 20 attack vectors + expected codes
 ├── .github/workflows/ci.yml           Node × OS matrix + Python cross-verify
 ├── SPEC.md             normative specification
 ├── SECURITY.md         threat model & explicit limitations

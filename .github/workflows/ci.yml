@@ -24,6 +24,14 @@ jobs:
         run: npm run attacks
       - name: regenerate and re-verify test vectors
         run: npm run gen:vectors
+      - name: vectors are byte-for-byte reproducible
+        shell: bash
+        run: |
+          git diff --exit-code --stat -- vectors/
+          if [ -n "$(git status --porcelain -- vectors/)" ]; then
+            echo "::error::regenerated vectors differ from committed ones"; git diff -- vectors/; exit 1
+          fi
+          echo "byte-for-byte vector reproducibility confirmed"
       - name: zero runtime dependencies policy
         shell: bash
         run: |

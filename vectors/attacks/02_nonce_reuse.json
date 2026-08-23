@@ -11,12 +11,12 @@
     "action_id": "rate_product",
     "weight": 50,
     "timestamp": 1755860000000,
-    "nonce": "7063e58e9e43846f2ab3877e333ecada",
-    "pioneer_uid_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "nonce": "abababababababababababababababab",
+    "pioneer_uid_hash": "h1:VqKoVk0vLaGq8pfNkZQWAR2X0CfmzW6I3VdwaJ7394k",
     "eligibility": {
       "kyc_passed": true,
       "mainnet_migrated": true
     },
-    "signature": "hIwwe69TRAta91g1GXTTWRwWO4PihpC8nDGe7sFYkTOYps4JoPGrTiJVhPF4Gprl+D2V5ACCz64Qr1XDpKXxDw=="
+    "signature": "roJ/z1vBQ8WQy5vYvyoQqwZDAQdFoQVs8Gs0jBMU6d8kUVHDglBBCymdg25PHwg2Ny+OgdnBpT5k+VxCUeRhDQ=="
   }
 }

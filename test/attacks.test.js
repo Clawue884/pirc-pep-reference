@@ -32,7 +32,8 @@ test('suite covers the documented adversarial matrix', () => {
     '16_unknown_key_claim',
     '17_registry_kyc_false',
     '18_registry_mainnet_false',
-    '19_unregistered_pioneer'
+    '19_unregistered_pioneer',
+    '20_prototype_key_app'
   ]) {
     assert.ok(names.includes(expected), `missing attack scenario: ${expected}`);
   }

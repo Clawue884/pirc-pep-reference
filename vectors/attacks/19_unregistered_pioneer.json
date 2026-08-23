@@ -1,6 +1,6 @@
 {
   "attack": "19_unregistered_pioneer",
-  "description": "pioneer hash absent from the launchpad eligibility registry entirely",
+  "description": "schema-valid pioneer hash absent from the launchpad eligibility registry entirely",
   "expected_code": "INELIGIBLE_USER",
   "precondition_verify_once": false,
   "event": {
@@ -11,12 +11,12 @@
     "action_id": "complete_transaction",
     "weight": 50,
     "timestamp": 1755860000000,
-    "nonce": "eec114f7d6a4ce3c7bf3ab7a0b2626aa",
-    "pioneer_uid_hash": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "nonce": "abababababababababababababababab",
+    "pioneer_uid_hash": "h1:3F8YeGHW227ElQhUokO80VZAH7qf36dIsx1VIt6CtXM",
     "eligibility": {
       "kyc_passed": true,
       "mainnet_migrated": true
     },
-    "signature": "IzV+2ZfiKdxsUKmE2DvZ5VOXw0O/wXwQkYB6yTUANm+nqAyqPOUlo2EzBtE+8uWMw4nDdACC4SdGMS/SNUa6Aw=="
+    "signature": "kVtPdXLeuP8R+DH3gMu3NnbnWEr+5dSs/edW4O5Zg8DqxGCoYCRWRZbSQ5bfN5xG55ACDmDVO0Pi6BXGTMP3AQ=="
   }
 }

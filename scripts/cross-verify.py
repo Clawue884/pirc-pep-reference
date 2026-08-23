@@ -12,6 +12,7 @@ import hashlib
 import json
 import os
 import sys
+import unicodedata
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -95,7 +96,12 @@ def ed25519_verify(public_key_32: bytes, message: bytes, signature_64: bytes) ->
 
 
 # ------------------------------------------------------- canonicalization ---
-def canonicalize(value) -> str:
+MAX_DEPTH = 64
+
+
+def canonicalize(value, depth=0) -> str:
+    if depth > MAX_DEPTH:
+        raise ValueError(f"canonicalization depth exceeded {MAX_DEPTH}")
     if value is None or isinstance(value, bool):
         return json.dumps(value)
     if isinstance(value, int):
@@ -105,12 +111,19 @@ def canonicalize(value) -> str:
     if isinstance(value, float):
         raise ValueError("floats are outside the PEP profile")
     if isinstance(value, str):
-        return json.dumps(value, ensure_ascii=False)
+        return json.dumps(unicodedata.normalize("NFC", value), ensure_ascii=False)
     if isinstance(value, list):
-        return "[" + ",".join(canonicalize(v) for v in value) + "]"
+        return "[" + ",".join(canonicalize(v, depth + 1) for v in value) + "]"
     if isinstance(value, dict):
-        keys = sorted(value.keys())
-        return "{" + ",".join(json.dumps(k) + ":" + canonicalize(value[k]) for k in keys) + "}"
+        keys = sorted(unicodedata.normalize("NFC", k) for k in value.keys())
+        return (
+            "{"
+            + ",".join(
+                json.dumps(k, ensure_ascii=False) + ":" + canonicalize(value[k], depth + 1)
+                for k in keys
+            )
+            + "}"
+        )
     raise ValueError(f"unsupported type: {type(value).__name__}")
 
 

@@ -5,9 +5,11 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { hashUid } from '../src/events.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const CLI = path.join(ROOT, 'src', 'cli.js');
+const DEV_UID_SECRET = 'cli-e2e-uid-secret-0123456789abcdef';
 
 function tmpdir() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'pep-cli-'));
@@ -20,10 +22,10 @@ function runCli(args, cwd) {
   });
 }
 
-test('attacks command exits 0 and reports 19/19 rejected', () => {
+test('attacks command exits 0 and reports 20/20 rejected', () => {
   const r = runCli(['attacks']);
   assert.equal(r.status, 0, r.stderr);
-  assert.match(r.stdout, /19\/19 attacks rejected/);
+  assert.match(r.stdout, /20\/20 attacks rejected/);
 });
 
 test('demo command exits 0', () => {
@@ -43,6 +45,7 @@ test('end-to-end: keygen, registry, sign, verify accept then replay reject', () 
     { cwd: dir }
   );
 
+  const uidHash = hashUid('dev-user', DEV_UID_SECRET);
   const event = {
     v: 1,
     app_id: 'acme-app',
@@ -52,14 +55,14 @@ test('end-to-end: keygen, registry, sign, verify accept then replay reject', () 
     weight: 7,
     timestamp: Date.now(),
     nonce: 'ab'.repeat(16),
-    pioneer_uid_hash: 'cd'.repeat(32),
+    pioneer_uid_hash: uidHash,
     eligibility: { kyc_passed: true, mainnet_migrated: true }
   };
   fs.writeFileSync(path.join(dir, 'event.json'), JSON.stringify(event, null, 2));
 
   execFileSync(
     process.execPath,
-    [CLI, 'eligible', '--registry', 'registry.json', '--uid-hash', 'cd'.repeat(32)],
+    [CLI, 'eligible', '--registry', 'registry.json', '--uid-hash', uidHash],
     { cwd: dir }
   );
 

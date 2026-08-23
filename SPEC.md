@@ -17,6 +17,12 @@ and clock reading always yield the same verdict.
 - Envelopes are JSON objects restricted to: objects, arrays, strings, booleans,
   `null`, and **non-negative safe integers**. Floats MUST be rejected
   (`CANONICALIZATION`).
+- All strings MUST be normalized to **Unicode Normalization Form C (NFC)**
+  before serialization; conforming implementations normalize during
+  canonicalization so that visually identical inputs in NFD and NFC produce
+  byte-identical output.
+- Serialization recursion MUST be depth-capped (reference implementation: 64)
+  as defense-in-depth against stack-exhaustion inputs.
 - Canonical serialization: keys sorted lexicographically (UTF-16 code-unit
   order), no whitespace, minimal JSON string escaping. Arrays preserve order.
 - This is a deliberately closed profile of RFC 8785 (JCS). By excluding floats
@@ -39,8 +45,8 @@ See `schema/engagement-event.schema.json` for the full field contract.
 | `action_id` | string | app-defined milestone id |
 | `weight` | int | `>=1`, bounded per class |
 | `timestamp` | int | unix ms |
-| `nonce` | string | 16 random bytes hex |
-| `pioneer_uid_hash` | string | sha256 hex of UID (+ optional salt) |
+| `nonce` | string | 32 hex chars; MUST be unique per `(app_id)`; random per event |
+| `pioneer_uid_hash` | string | versioned HMAC tag: `h1:` + base64url(HMAC-SHA256(backend_secret, NFC(UID))); secret ≥16 chars, never transmitted. Legacy `[0-9a-f]{64}` sha256 tags are readable but deprecated |
 | `eligibility` | object | `{ kyc_passed, mainnet_migrated }` booleans |
 | `signature` | string | base64 Ed25519 (64 bytes) |
 
@@ -74,10 +80,16 @@ A verifier MUST evaluate checks in this order and stop at first failure:
 7. `WEIGHT_BOUND` — §4 ceilings → else `WEIGHT_OVERFLOW`
 8. `ELIGIBILITY` — self-declared flags true AND pioneer hash listed in the
    launchpad eligibility registry → else `INELIGIBLE_USER`
-9. `NONCE_REPLAY` — `(app_id, nonce)` unseen; recorded only after all prior
-   checks pass → else `REPLAY_DETECTED`
+9. `NONCE_REPLAY` — `(app_id, nonce)` unseen; claimed and recorded **atomically**
+   only after all prior checks pass → else `REPLAY_DETECTED`
 
 Recording the nonce last guarantees failed verifications never burn nonces.
+The check-and-record MUST be a single atomic test-and-set
+(`claimIfAbsent`): within a process this is an indivisible synchronous
+operation; across processes the reference `FileNonceStore` holds an exclusive
+lockfile, re-reads durable state, appends, and `fsync`s before releasing. A
+verifier MUST NOT implement replay protection with separate exists-check and
+write calls.
 
 ## 6. Key management
 

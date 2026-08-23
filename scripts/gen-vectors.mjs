@@ -1,7 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { ATTACKS, SUITE_NOW, makeWorld } from '../src/attacks.js';
+import { ATTACKS, SUITE_NOW, SUITE_UID_SECRET, makeWorld } from '../src/attacks.js';
+import { hashUid, signEvent } from '../src/events.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const VECTORS = path.join(ROOT, 'vectors');
@@ -22,11 +23,10 @@ const baselineEvent = {
   weight: 50,
   timestamp: SUITE_NOW,
   nonce: '11'.repeat(16),
-  pioneer_uid_hash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+  pioneer_uid_hash: hashUid('alice', SUITE_UID_SECRET),
   eligibility: { kyc_passed: true, mainnet_migrated: true }
 };
 
-import { signEvent } from '../src/events.js';
 const signedBaseline = signEvent(baselineEvent, world.currentKey.private_key_pem);
 fs.writeFileSync(
   path.join(VECTORS, 'valid', 'signed-event.json'),

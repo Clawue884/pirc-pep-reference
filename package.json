@@ -1,6 +1,6 @@
 {
   "name": "pirc-pep-reference",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Minimal deterministic reference implementation of Programmable Engagement Proofs (PEP): canonical schemas, Ed25519-signed activity payloads, replay protection, bounded weights, and a verifiable CLI.",
   "type": "module",
   "author": {

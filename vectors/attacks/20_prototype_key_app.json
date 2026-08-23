@@ -1,13 +1,14 @@
 {
-  "attack": "12_missing_field",
-  "description": "required field removed from the envelope",
-  "expected_code": "SCHEMA",
+  "attack": "20_prototype_key_app",
+  "description": "app_id set to an inherited object-prototype property name (\"constructor\") to probe unsafe registry lookups",
+  "expected_code": "UNKNOWN_APP",
   "precondition_verify_once": false,
   "event": {
     "v": 1,
-    "app_id": "demo-app",
+    "app_id": "constructor",
     "key_id": "k-2026-active",
     "action_class": "A",
+    "action_id": "complete_transaction",
     "weight": 50,
     "timestamp": 1755860000000,
     "nonce": "abababababababababababababababab",
@@ -16,6 +17,6 @@
       "kyc_passed": true,
       "mainnet_migrated": true
     },
-    "signature": "g2eanut0Nkm7+i9Nc7GeQgsfn6IB51eJ1X7E9dtNUeCPbr89wSmiOUcVKGLhEmKxBhkDNwhdgaTcFNdcqJXeAw=="
+    "signature": "Anv2BUkPouGEdKsReBFqDo6FP06HaoBybbTrRx4s8UluBLxaohQFlNVFWr7bvsqW/vmr21xOHqtXoisOi4iFAQ=="
   }
 }
