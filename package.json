@@ -23,6 +23,7 @@
   },
   "scripts": {
     "test": "node --test",
+    "conformance": "node --test test/conformance.test.js",
     "attacks": "node src/cli.js attacks",
     "demo": "node src/cli.js demo",
     "gen:vectors": "node scripts/gen-vectors.mjs && node scripts/check-vectors.mjs",
@@ -34,7 +35,9 @@
     "ed25519",
     "canonical-json",
     "replay-protection",
-    "sybil-resistance"
+    "sybil-resistance",
+    "conformance",
+    "trust-boundary"
   ],
   "license": "(MIT OR Apache-2.0)"
 }
