@@ -380,16 +380,27 @@ export function verifySignedEvent(
    */
   const nonceKey = `${event.app_id}:${event.nonce}`;
 
+let claimed;
+
+if (typeof nonceStore.claim === 'function') {
+  claimed = nonceStore.claim(nonceKey);
+} else {
+  // Backward-compatible fallback for legacy stores.
   if (nonceStore.has(nonceKey)) {
-    return reject(
-      'NONCE_REPLAY',
-      ERROR_CODES.REPLAY_DETECTED
-    );
+    return reject('NONCE_REPLAY', ERROR_CODES.REPLAY_DETECTED);
   }
 
   nonceStore.add(nonceKey);
+  claimed = true;
+}
 
-  record('NONCE_REPLAY', true);
+if (!claimed) {
+  return reject('NONCE_REPLAY', ERROR_CODES.REPLAY_DETECTED);
+}
+
+record('NONCE_REPLAY', true);
+
+return { ok: true, code: null, checks };
 
   /*
    * ---------------------------------------------------------------
